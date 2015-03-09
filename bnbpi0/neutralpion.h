@@ -54,7 +54,9 @@ namespace larlite {
     virtual bool finalize();
 
   protected:
-
+	
+	double ProtThresh = 0.20;// Based on Argoneut
+	
 	::bottleopener fBO;
 	void InitializeAnaTree();
 
@@ -77,8 +79,7 @@ namespace larlite {
 	double P_py;
 	double P_pz;
 	double P_pmag;
-
-
+	int protoncount;
 
 
 

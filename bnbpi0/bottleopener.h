@@ -36,6 +36,7 @@ public:
 
         std::pair<int,std::vector<int>> pi0count(std::vector<larlite::mcpart> &parts);
         int cmesoncounter(std::vector<larlite::mcpart> &parts);
+        std::pair<int,std::vector<int>> protoncounter(std::vector<larlite::mcpart> &parts, double threshold);
 
 
 

@@ -16,10 +16,12 @@ namespace larlite {
   
   bool neutralpion::analyze(storage_manager* storage) {
 
+	// Bring in the info for the event
         auto mctruth = storage->get_data<event_mctruth>("generator");
         auto mcnu = mctruth->at(0).GetNeutrino();
         auto mcpart = mctruth->at(0).GetParticles();
 
+	//Fill out the neutrino interaction information
         ccnc = mcnu.CCNC();
         mode = mcnu.Mode();
         interaction = mcnu.InteractionType();
@@ -30,8 +32,10 @@ namespace larlite {
 	auto pi0count = fBO.pi0count(mcpart);
 	fsipi0 = pi0count.first;
 	auto cmeson = fBO.cmesoncounter(mcpart);
+	// protoncounter pair<(int) how many fsi protons, (vector<int>) the track ID>
+	auto protoninfo = fBO.protoncounter(mcpart,ProtThresh);
+	protoncount = protoninfo.first;
 
-	
 	if(pi0count.first==1 && cmeson==0){
 		for(auto const mcp : mcpart){
 			//find the particle info
@@ -48,10 +52,7 @@ namespace larlite {
 			P_pmag = sqrt(P_px*P_px+P_py*P_py+ P_pz*P_pz);
 			}// if we have the particle
 		}//for loop over mcp
-		}//if pi0 is single
-		
-		
-
+	}//if pi0 is single
   
 	// Fill the FullTree
 	FullTree->Fill();
@@ -64,7 +65,6 @@ namespace larlite {
 		FullTree->Write();
 		SPTree->Write();
 	      }
-	
     return true;
   }
 
@@ -77,7 +77,6 @@ namespace larlite {
                 FullTree->Branch("w",&w,"w/D");
                 FullTree->Branch("qsqr",&qsqr,"qsqr/D");
                 FullTree->Branch("fsipi0",&fsipi0,"fsipi0/I");
-
 
         SPTree = new TTree("SPTree","SPTree");
                 SPTree->Branch("ccnc",&ccnc,"ccnc/I");
@@ -94,6 +93,7 @@ namespace larlite {
                 SPTree->Branch("PdirY",&P_py,"P_py/D");
                 SPTree->Branch("PdirZ",&P_pz,"P_pz/D");
                 SPTree->Branch("Ppmag",&P_pmag,"P_pmag/D");
+                SPTree->Branch("protoncount",&protoncount,"protoncount/I");
 	}
 
 }
