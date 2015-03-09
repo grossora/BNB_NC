@@ -17,6 +17,12 @@
 
 #include "Analysis/ana_base.h"
 
+#include "bottleopener.h"
+
+#include "DataFormat/mctruth.h"
+#include "DataFormat/mcpart.h"
+
+
 namespace larlite {
   /**
      \class neutralpion
@@ -48,6 +54,34 @@ namespace larlite {
     virtual bool finalize();
 
   protected:
+
+	::bottleopener fBO;
+	void InitializeAnaTree();
+
+        TTree *FullTree;
+        TTree *SPTree;
+
+	// Variable 
+	int ccnc;
+	int mode;
+	int interaction;
+	double w; 
+	double qsqr;
+	int fsipi0;
+	double _spenergy;
+
+	double P_x;
+	double P_y;
+	double P_z;
+	double P_px;
+	double P_py;
+	double P_pz;
+	double P_pmag;
+
+
+
+
+
     
   };
 }

@@ -7,55 +7,94 @@ namespace larlite {
 
   bool neutralpion::initialize() {
 
-    //
-    // This function is called in the beggining of event loop
-    // Do all variable initialization you wish to do here.
-    // If you have a histogram to fill in the event loop, for example,
-    // here is a good place to create one on the heap (i.e. "new TH1D"). 
-    //
+        InitializeAnaTree();
+
+
 
     return true;
   }
   
   bool neutralpion::analyze(storage_manager* storage) {
+
+        auto mctruth = storage->get_data<event_mctruth>("generator");
+        auto mcnu = mctruth->at(0).GetNeutrino();
+        auto mcpart = mctruth->at(0).GetParticles();
+
+        ccnc = mcnu.CCNC();
+        mode = mcnu.Mode();
+        interaction = mcnu.InteractionType();
+        w = mcnu.W();
+        qsqr = mcnu.QSqr();
+
+	// pi0count pair<(int) how many fsi pi0, (vector<int>) the track ID>
+	auto pi0count = fBO.pi0count(mcpart);
+	fsipi0 = pi0count.first;
+	auto cmeson = fBO.cmesoncounter(mcpart);
+
+	
+	if(pi0count.first==1 && cmeson==0){
+		for(auto const mcp : mcpart){
+			//find the particle info
+			if(mcp.TrackId()==pi0count.second[0])
+			{
+                        auto traj = mcp.Trajectory();
+			_spenergy = traj[0].E();
+                        P_x = traj[0].X();
+                        P_y = traj[0].Y();
+                        P_z = traj[0].Z();
+                        P_px = traj[0].Px();
+                        P_py = traj[0].Py();
+                        P_pz = traj[0].Pz();
+			P_pmag = sqrt(P_px*P_px+P_py*P_py+ P_pz*P_pz);
+			}// if we have the particle
+		}//for loop over mcp
+		}//if pi0 is single
+		
+		
+
   
-    //
-    // Do your event-by-event analysis here. This function is called for 
-    // each event in the loop. You have "storage" pointer which contains 
-    // event-wise data. To see what is available, check the "Manual.pdf":
-    //
-    // http://microboone-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=3183
-    // 
-    // Or you can refer to Base/DataFormatConstants.hh for available data type
-    // enum values. Here is one example of getting PMT waveform collection.
-    //
-    // event_fifo* my_pmtfifo_v = (event_fifo*)(storage->get_data(DATA::PMFIFO));
-    //
-    // if( event_fifo )
-    //
-    //   std::cout << "Event ID: " << my_pmtfifo_v->event_id() << std::endl;
-    //
-  
+	// Fill the FullTree
+	FullTree->Fill();
+	if(pi0count.first==1) SPTree->Fill();
     return true;
   }
 
   bool neutralpion::finalize() {
-
-    // This function is called at the end of event loop.
-    // Do all variable finalization you wish to do here.
-    // If you need, you can store your ROOT class instance in the output
-    // file. You have an access to the output file through "_fout" pointer.
-    //
-    // Say you made a histogram pointer h1 to store. You can do this:
-    //
-    // if(_fout) { _fout->cd(); h1->Write(); }
-    //
-    // else 
-    //   print(MSG::ERROR,__FUNCTION__,"Did not find an output file pointer!!! File not opened?");
-    //
-  
+     if(_fout){
+		FullTree->Write();
+		SPTree->Write();
+	      }
+	
     return true;
   }
+
+  void neutralpion::InitializeAnaTree()
+        {
+        FullTree = new TTree("FullTree","FullTree");
+                FullTree->Branch("ccnc",&ccnc,"ccnc/I");
+                FullTree->Branch("mode",&mode,"mode/I");
+                FullTree->Branch("interaction",&interaction,"interaction/I");
+                FullTree->Branch("w",&w,"w/D");
+                FullTree->Branch("qsqr",&qsqr,"qsqr/D");
+                FullTree->Branch("fsipi0",&fsipi0,"fsipi0/I");
+
+
+        SPTree = new TTree("SPTree","SPTree");
+                SPTree->Branch("ccnc",&ccnc,"ccnc/I");
+                SPTree->Branch("mode",&mode,"mode/I");
+                SPTree->Branch("interaction",&interaction,"interaction/I");
+                SPTree->Branch("w",&w,"w/D");
+                SPTree->Branch("qsqr",&qsqr,"qsqr/D");
+                SPTree->Branch("fsipi0",&fsipi0,"fsipi0/I");
+                SPTree->Branch("energy",&_spenergy,"spenergy/D");
+                SPTree->Branch("PposX",&P_x,"P_x/D");
+                SPTree->Branch("PposY",&P_y,"P_y/D");
+                SPTree->Branch("PposZ",&P_z,"P_z/D");
+                SPTree->Branch("PdirX",&P_px,"P_px/D");
+                SPTree->Branch("PdirY",&P_py,"P_py/D");
+                SPTree->Branch("PdirZ",&P_pz,"P_pz/D");
+                SPTree->Branch("Ppmag",&P_pmag,"P_pmag/D");
+	}
 
 }
 #endif
