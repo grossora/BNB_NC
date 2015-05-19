@@ -20,7 +20,6 @@ namespace larlite {
         auto mcpart = mctruth->at(0).GetParticles();
         auto mcshower = storage->get_data<event_mcshower>("mcreco");
 
-
 	//Fill out the neutrino interaction information
         ccnc = mcnu.CCNC();
         mode = mcnu.Mode();
@@ -60,16 +59,59 @@ namespace larlite {
 	bool DalitzDecay = false; 
 	double contain_shower_a = -999;
 	double contain_shower_b = -999;
+	double shower_a_E = -999;
+	double shower_a_x = -999;
+	double shower_a_y = -999;
+	double shower_a_z = -999;
+	double shower_a_px = -999;
+	double shower_a_py = -999;
+	double shower_a_pz = -999;
+	double shower_b_E = -999;
+	double shower_b_x = -999;
+	double shower_b_y = -999;
+	double shower_b_z = -999;
+	double shower_b_px = -999;
+	double shower_b_py = -999;
+	double shower_b_pz = -999;
+
+	double sprof_a_E = -999;
+	double sprof_a_x = -999;
+	double sprof_a_y = -999;
+	double sprof_a_z = -999;
+	double sprof_a_px = -999;
+	double sprof_a_py = -999;
+	double sprof_a_pz = -999;
+	double sprof_b_E = -999;
+	double sprof_b_x = -999;
+	double sprof_b_y = -999;
+	double sprof_b_z = -999;
+	double sprof_b_px = -999;
+	double sprof_b_py = -999;
+	double sprof_b_pz = -999;
+
+
 	// True signal events will only have 2 mcshower. 
-	if(mcshower->size()>2){std::cout<<"Dalitz Decay with shower size"<<mcshower->size()<<std::endl;  DalitzDecay=true;}
+	if(mcshower->size()>2){  DalitzDecay=true;}
                         for(auto const& mcs : *mcshower){
 				auto SP = mcs.Start();
                                 auto ShowerDetProf =  mcs.DetProfile();
                                 double mccontained = ShowerDetProf.E()/SP.E();
-				if(contain_shower_b == -999 && contain_shower_a!=-999 ) contain_shower_b = mccontained;  
-				if(contain_shower_a == -999) contain_shower_a = mccontained;  
-				}
+				if(contain_shower_b == -999 && contain_shower_a!=-999 ){ 
+				contain_shower_b = mccontained;  
+				}// shower b
+				if(contain_shower_a == -999){ contain_shower_a = mccontained;  
+				}// shower a
+				}// loop over the mcshower
+	if(pi0count.first==1 && cmeson==0 && !DalitzDecay){
+	std::cout<<"This should always be true  2 = "<<mcshower->size()<<std::endl;
+	std::cout<<"Contain A "<<contain_shower_a<<std::endl;
+	std::cout<<"Contain B "<<contain_shower_b<<std::endl;
+	}	
+
+
+
 	// Fill the FullTree
+
 	FullTree->Fill();
 //	if(pi0count.first==1) SPTree->Fill();
 	if(pi0count.first==1 && cmeson==0) SPTree->Fill();
