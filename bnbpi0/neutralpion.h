@@ -21,6 +21,7 @@
 
 #include "DataFormat/mctruth.h"
 #include "DataFormat/mcpart.h"
+#include "DataFormat/mcshower.h"
 
 
 namespace larlite {
@@ -67,6 +68,7 @@ namespace larlite {
 	int ccnc;
 	int mode;
 	int interaction;
+	int status = -999;
 	double w; 
 	double qsqr;
 	int fsipi0;
