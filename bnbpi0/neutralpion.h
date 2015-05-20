@@ -63,6 +63,7 @@ namespace larlite {
 
         TTree *FullTree;
         TTree *SPTree;
+        TTree *SP_Gamma_Tree;
 
 	// Variable 
 	int ccnc;
@@ -82,6 +83,41 @@ namespace larlite {
 	double P_pz;
 	double P_pmag;
 	int protoncount;
+
+
+        double contain_shower_a = -999;
+        double contain_shower_b = -999;
+
+
+        double shower_a_E = -999;
+        double shower_a_x = -999;
+        double shower_a_y = -999;
+        double shower_a_z = -999;
+        double shower_a_px = -999;
+        double shower_a_py = -999;
+        double shower_a_pz = -999;
+        double shower_b_E = -999;
+        double shower_b_x = -999;
+        double shower_b_y = -999;
+        double shower_b_z = -999;
+        double shower_b_px = -999;
+        double shower_b_py = -999;
+        double shower_b_pz = -999;
+
+        double sprof_a_E = -999;
+        double sprof_a_x = -999;
+        double sprof_a_y = -999;
+        double sprof_a_z = -999;
+        double sprof_a_px = -999;
+        double sprof_a_py = -999;
+        double sprof_a_pz = -999;
+        double sprof_b_E = -999;
+        double sprof_b_x = -999;
+        double sprof_b_y = -999;
+        double sprof_b_z = -999;
+        double sprof_b_px = -999;
+        double sprof_b_py = -999;
+        double sprof_b_pz = -999;
 
 
 
