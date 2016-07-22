@@ -12,7 +12,9 @@
 //#pragma link C++ class sample+;
 #pragma link C++ class larlite::neutralpion+;
 #pragma link C++ class bottleopener+;
+#pragma link C++ class larlite::ncpizerosorter+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
+
 
 
